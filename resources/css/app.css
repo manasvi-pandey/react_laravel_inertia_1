@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwindcss forms;
+
+html {
+    font-family: 'sans-serif';
+}
