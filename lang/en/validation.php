@@ -152,8 +152,8 @@ return [
     */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'task' => [
+            'unique' => 'A task with this name already exists',
         ],
     ],
 

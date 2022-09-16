@@ -1,19 +1,36 @@
 import React, { useState } from "react";
-import { Head, Link } from "@inertiajs/inertia-react";
-import { Inertia } from "@inertiajs/inertia";
+import { Head } from "@inertiajs/inertia-react";
 import Heading from "@/Components/Heading";
+import AddIcon from "@/Partials/AddIcon";
+import ProcessingIcon from "@/Partials/ProcessingIcon";
 
 export default function Todos({ todos }) {
-    const [todo, setTodo] = useState({
-        todo: ""
-    });
+    const [allData, setAllData] = useState(todos);
+    const [task, setTask] = useState("");
+    const [error, setError] = useState(null);
 
     function handleSubmit(e) {
         e.preventDefault();
-        Inertia.post('/add-todo', todo);
-        setTodo({
-            todo: ""
-        });
+        if (task === "") {
+            setError("Please enter a task title");
+        } else {
+            axios.post("/add-todo", { task })
+                .then(res => {
+                    if (res.data.status === "success") {
+                        let data = res.data.data;
+                        // console.log(data);
+                        setAllData([ data, ...todos ]);
+                    }
+                })
+                .catch(err => {
+                    setError(err.response.data.message);
+                })
+        }
+    }
+
+    function handleNewTodo(e) {
+        setTask(e.target.value)
+        setError(null);
     }
 
     return (
@@ -31,40 +48,29 @@ export default function Todos({ todos }) {
                 </p>
 
                 <form onSubmit={handleSubmit}>
-                    <div style={{ display: "flex", marginBottom: "20px" }}>
+                    <div style={{ display: "flex" }}>
                         <input
                             type="text"
                             className="mr-1 focus:ring-indigo-500 focus:border-indigo-500 flex-1 block w-full rounded-none rounded-r-md sm:text-sm border-gray-400"
                             placeholder="Enter new task"
-                            id="todo"
-                            value={todo.todo}
-                            onChange={(e) => setTodo({ todo: e.target.value })}
+                            value={task}
+                            onChange={(e) => handleNewTodo(e)}
                         />
                         <button
                             type="submit"
-                            className="inline-flex items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                            className="inline-flex items-center px-3 py-1 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none disabled:opacity-75"
                         >
-                            <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                strokeWidth="1.5"
-                                stroke="currentColor"
-                                className="w-4 h-4 mr-1"
-                            >
-                                <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="M12 4.5v15m7.5-7.5h-15"
-                                />
-                            </svg>
+                            <AddIcon />
                             Add Task
                         </button>
+                    </div>
+                    <div className="text-red-600 font-bold mb-4">
+                        {error ? error : ""}
                     </div>
                 </form>
 
                 <ul>
-                    {todos.map((todo) => (
+                    {allData.map((todo) => (
                         <li key={todo.id}>{todo.task}</li>
                     ))}
                 </ul>

@@ -20,10 +20,14 @@ class TodosController extends Controller
 
     public function add(Request $request)
     {
-        Task::create([
-            'task' => $request->todo
+        $validate = $request->validate([
+            'task' => ['unique:tasks'],
         ]);
 
-        return Redirect::route('todos');
+        $new_task = Task::create([
+            'task' => $request->task
+        ]); 
+
+        return response()->json(['status' => 'success', 'message' => 'Task added successfully', 'data' => $new_task]);
     }
 }
