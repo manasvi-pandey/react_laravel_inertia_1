@@ -27,6 +27,9 @@ use App\Http\Controllers\TodosController;
 
 Route::get('todos', [TodosController::class, 'index'])->name('todos');
 Route::post('add-todo', [TodosController::class, 'add']);
+Route::post('mark-as-complete', [TodosController::class, 'markAsComplete']);
+Route::post('update-todo', [TodosController::class, 'updateTodo']);
+Route::post('delete-todo', [TodosController::class, 'deleteTodo']);
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
